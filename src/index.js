@@ -19,27 +19,43 @@ const App = () => {
             const state = info.normalizedInput.state;
             console.log(state);
             const divisions = info.divisions;
+
             let count = 0;
             let districtString = '';
             let newNum = '';
+            let firstNum = '';
+            let secondNum = '';
             for ( let prop in divisions) {           
                 count = prop.length-1;
                 districtString = prop;
                 console.log(districtString);
-                newNum = districtString[count];
-                console.log("should be district number",newNum);
-                if (!isNaN(newNum)) {
+                firstNum = districtString[count];
+                console.log("should be district number",firstNum);
+                if (!isNaN(firstNum)) {
+                    let secondToLast = prop.length-2;
+                    let twoDigitDistrictNum = districtString[secondToLast];
+                    if (!isNaN(twoDigitDistrictNum)) {
+                        secondNum = twoDigitDistrictNum;
+                    }
                     break;
                 } 
             }
-            let num = districtString.length - 1;
-            let districtNum = districtString[num];
-            let districtName = state + '_' + districtNum;
+            if (isNaN(firstNum)) {
+                throw error;
+            }
+            if (firstNum) {
+                newNum = firstNum;
+            }
+            if (secondNum) {
+                newNum = secondNum + firstNum;
+            }
+            let districtName = state + '_' + newNum;
             setCd(districtName);
             if (info) {
                 setSuccess(true);
             }
         } catch (error) {
+            alert('Please provide a valid five digit zipcode in the United States.')
             console.error(error);
         }
     }
@@ -59,6 +75,7 @@ const App = () => {
                 </input>
                 <button type='submit'>Submit</button>
             </form>
+            <h3>Congressional District:</h3>
             <p>{success ? cd : null}</p>
         </div>
     );
